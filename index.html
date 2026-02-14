@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>My Valentine</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+        .card {
+            position: relative;
+            width: 380px;
+            height: 600px;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+            text-align: center;
+            padding: 20px 20px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .page1 {
+            position: relative;
+        }
+        .page1 h1 {
+            font-size: 26px;
+            color: #ff1a75;
+            margin: 0 0 100px 0;
+            z-index: 1;
+        }
+        .heart-btn {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            left: 50%;
+            top: 320px;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            background: #ff1a75;
+            cursor: pointer;
+            animation: beat 1s infinite;
+            box-shadow: 0 20px 40px rgba(255,26,117,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+        .heart-btn span {
+            transform: rotate(45deg);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .heart-btn::before,
+        .heart-btn::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: #ff1a75;
+            border-radius: 50%;
+            z-index: -1;
+        }
+        .heart-btn::before {
+            top: -55px;
+            left: 0;
+        }
+        .heart-btn::after {
+            left: 55px;
+            top: 0;
+        }
+        @keyframes beat {
+            0%, 100% {
+                transform: translate(-50%, -50%) rotate(-45deg) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) rotate(-45deg) scale(1.1);
+            }
+        }
+        .no-text {
+            position: absolute;
+            font-size: 20px;
+            font-weight: bold;
+            color: #444;
+            left: 50%;
+            top: 140px;
+            transform: translate(-50%, -50%);
+            user-select: none;
+            pointer-events: none;
+            z-index: 4;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            transition: none;
+        }
+        .page2 {
+            display: none;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .page2 h1 {
+            color: #ff1a75;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+        .message {
+            font-size: 18px;
+            margin: 5px 0 15px;
+            line-height: 1.4;
+        }
+        .collage {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 130px);
+            gap: 8px;
+            width: 100%;
+            max-width: 340px;
+            margin: 0 auto;
+        }
+        .collage img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+        .collage img:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <div class="card" id="card">
+        <div class="page1" id="page1">
+            <h1>Will you be my Valentine?</h1>
+            <div class="heart-btn" id="yesBtn">
+                <span>YES</span>
+            </div>
+            <div class="no-text" id="noBtn">No</div>
+        </div>
+        <div class="page2" id="page2">
+            <h1>YAYYYY, You said YES!</h1>
+            <div class="message"><b>YES!</b></div>
+            <div class="message">Thank you my love for being my Valentine...<br>You made my day. I love you ❤️</div>
+            <div class="collage">
+                <!-- Images work perfectly from same folder on GitHub -->
+                <img src="img1.jpg" alt="Love moment 1">
+                <img src="img2.jpg" alt="Love moment 2">
+                <img src="img3.jpg" alt="Love moment 3">
+                <img src="img4.jpg" alt="Love moment 4">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const card = document.getElementById('card');
+
+        noBtn.style.display = 'block';
+        noBtn.style.left = '50%';
+        noBtn.style.top = '140px';
+
+        let lastMoveTime = 0;
+        const minMoveInterval = 100;
+
+        function moveNo(x, y) {
+            const now = Date.now();
+            if (now - lastMoveTime < minMoveInterval) return;
+            lastMoveTime = now;
+
+            const cardRect = card.getBoundingClientRect();
+            const noRect = noBtn.getBoundingClientRect();
+            const dx = x - (noRect.left + noRect.width / 2);
+            const dy = y - (noRect.top + noRect.height / 2);
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < 60) {
+                const jumpDistance = 120 + Math.random() * 80;
+                const angle = Math.atan2(dy, dx);
+                
+                let newX = (noRect.left - cardRect.left) + Math.cos(angle + Math.PI) * jumpDistance;
+                let newY = (noRect.top - cardRect.top) + Math.sin(angle + Math.PI) * jumpDistance;
+                
+                newX += (Math.random() - 0.5) * 80;
+                newY += (Math.random() - 0.5) * 80;
+                
+                newX = Math.max(20, Math.min(newX, cardRect.width - 100));
+                newY = Math.max(20, Math.min(newY, cardRect.height - 80));
+                
+                noBtn.style.left = newX + 'px';
+                noBtn.style.top = newY + 'px';
+            }
+        }
+
+        card.addEventListener('mousemove', (e) => moveNo(e.clientX, e.clientY));
+        card.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                moveNo(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: true });
+
+        let lastYesClick = 0;
+        yesBtn.addEventListener('click', (e) => {
+            const now = Date.now();
+            if (now - lastYesClick < 20) return;
+            lastYesClick = now;
+            
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page2').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
